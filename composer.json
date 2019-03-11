@@ -1,0 +1,37 @@
+{
+  "name": "oxidio/module-seo",
+  "type": "oxideshop-module",
+  "description": "seo module for oxid shop",
+  "license": "GPL-3.0",
+  "keywords": [
+    "seo",
+    "sitemap",
+    "module",
+    "oxid"
+  ],
+  "require": {
+    "oxidio/module": "dev-master",
+    "php-fn/di": "^1",
+    "php": ">=7.1"
+  },
+  "require-dev": {
+    "oxid-esales/oxideshop-demodata-ce": "^6",
+    "oxidio/project": "dev-master"
+  },
+  "autoload": {
+    "psr-4": {
+      "Oxidio\\": ["src/Oxidio"]
+    },
+    "files": [
+      "src/autoload-files.php"
+    ]
+  },
+  "extra": {
+    "oxideshop": {
+      "whitelist-filter": [
+        "metadata.php"
+      ],
+      "target-directory": "oxidio/seo"
+    }
+  }
+}
