@@ -10,8 +10,9 @@
     "oxid"
   ],
   "require": {
-    "oxidio/module": "dev-master",
-    "php-fn/di": "^1",
+    "oxidio/oxidio": "dev-master",
+
+    "ext-json": "*",
     "php": ">=7.1"
   },
   "require-dev": {

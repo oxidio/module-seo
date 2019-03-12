@@ -3,6 +3,7 @@
  * Copyright (C) oxidio. See LICENSE file for license details.
  */
 
-namespace Oxidio
+namespace Oxidio\Seo
 {
+    const MODULE = __DIR__ . '/../config/di.php';
 }
