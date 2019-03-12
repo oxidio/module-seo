@@ -34,5 +34,8 @@
       ],
       "target-directory": "oxidio/seo"
     }
-  }
+  },
+  "bin": [
+    "bin/oxidio-seo"
+  ]
 }
