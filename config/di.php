@@ -7,7 +7,7 @@ namespace Oxidio\Module;
 
 use DI;
 use fn;
-use Oxidio\Seo;
+use Oxidio\Command;
 
 return [
     ID       => 'oxidio/seo',
@@ -17,9 +17,9 @@ return [
     SETTINGS => [],
 
     'cli' => DI\decorate(function(fn\Cli $cli) {
-        $cli->command('sitemap', Seo\SiteMap::class);
+        $cli->command('sitemap', Command\SiteMap::class, ['scope']);
         return $cli;
     }),
 
-    Seo\SiteMap::class => DI\create(),
+    Command\SiteMap::class => DI\create(),
 ];
