@@ -30,6 +30,7 @@
   "extra": {
     "oxideshop": {
       "whitelist-filter": [
+        "views/**/*",
         "metadata.php"
       ],
       "target-directory": "oxidio/seo"

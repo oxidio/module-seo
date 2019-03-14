@@ -3,6 +3,7 @@
 !/bin/
 !/config/
 !/src/
+!/views/
 !/.gitattributes
 !/.gitignore
 !/composer.json
