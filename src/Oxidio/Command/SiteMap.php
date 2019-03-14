@@ -6,7 +6,7 @@
 namespace Oxidio\Command;
 
 use fn;
-use OxidEsales\Eshop\Application\Model;
+use OxidEsales\Eshop\Application\Model\{Article, Category};
 use Oxidio;
 
 
@@ -63,22 +63,22 @@ class SiteMap
 
     protected function articles(): iterable
     {
-        return Oxidio\query(function(Model\Article $model, $timeStamp) {
+        return Oxidio\query(function(Article $model, $timeStamp) {
             return [$model->getMainLink(), $timeStamp];
-        }, ['oxactive' => 1, 'oxparentid' => '']);
+        }, [Article\ACTIVE => 1, Article\PARENTID => '']);
     }
 
     protected function variants(): iterable
     {
-        return Oxidio\query(function(Model\Article $model, $timeStamp) {
+        return Oxidio\query(function(Article $model, $timeStamp) {
             return [$model->getMainLink(), $timeStamp];
-        }, ['oxactive' => 1, 'oxparentid' => ['<>', '']]);
+        }, [Article\ACTIVE => 1, Article\PARENTID => ['<>', '']]);
     }
 
     protected function categories(): iterable
     {
-        return Oxidio\query(function(Model\Category $model, $timeStamp) {
+        return Oxidio\query(function(Category $model, $timeStamp) {
             return [$model->getLink(), $timeStamp];
-        }, ['oxactive' => 1, 'oxhidden' => '0']);
+        }, [Category\ACTIVE => 1, Category\HIDDEN => '0']);
     }
 }
