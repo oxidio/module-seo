@@ -4,10 +4,15 @@
   "description": "seo module for oxid shop",
   "license": "GPL-3.0",
   "keywords": [
+    "oxid",
     "seo",
     "sitemap",
     "module",
-    "oxid"
+    "google analytics",
+    "ga",
+    "google tag manager",
+    "gtm",
+    "enhanced commerce"
   ],
   "require": {
     "oxidio/oxidio": "dev-master",
