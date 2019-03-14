@@ -24,7 +24,7 @@ class Product implements JsonSerializable
     {
         if ($item instanceof Model\OrderArticle) {
             $art = $item->getArticle();
-            $data['quantity'] = $item->getFieldData('oxamount');
+            $data['quantity'] = $item->getFieldData(Model\OrderArticle\AMOUNT);
             $data['price']    = $item->getPrice()->getPrice();
         } else if ($item instanceof Model\BasketItem) {
             $art = $item->getArticle();
@@ -39,12 +39,12 @@ class Product implements JsonSerializable
         $product = new static;
         $product->key        = $art->getId();
         $product->properties = $data + [
-            'name'     => $art->getFieldData('oxtitle'),
-            'id'       => $art->getFieldData('oxartnum'),
+            'name'     => $art->getFieldData(Model\Article\TITLE),
+            'id'       => $art->getFieldData(Model\Article\ARTNUM),
             'price'    => $art->getPrice()->getPrice(),
-            'brand'    => $art->getManufacturer() ? $art->getManufacturer()->getFieldData('oxtitle') : null,
-            'category' => $art->getCategory() ? $art->getCategory()->getFieldData('oxtitle') : null,
-            'variant'  => $art->getFieldData('oxvarselect'),
+            'brand'    => $art->getManufacturer() ? $art->getManufacturer()->getFieldData(Model\Manufacturer\TITLE) : null,
+            'category' => $art->getCategory() ? $art->getCategory()->getFieldData(Model\Category\TITLE) : null,
+            'variant'  => $art->getFieldData(Model\Article\VARSELECT),
         ];
 
         return $product;

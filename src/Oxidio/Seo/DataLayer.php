@@ -84,11 +84,11 @@ class DataLayer implements IteratorAggregate
 
         yield self::push('purchase', [
             'actionField' => [
-                'id'          => $order->getFieldData('oxordernr'),
-                'affiliation' => self::field(Model\Shop::class, $order->getShopId(), 'oxname'),
-                'revenue'     => $order->getFieldData('oxtotalordersum'),
+                'id'          => $order->getFieldData(Model\Order\ORDERNR),
+                'affiliation' => self::field(Model\Shop::class, $order->getShopId(), Model\Shop\NAME),
+                'revenue'     => $order->getFieldData(Model\Order\TOTALORDERSUM),
                 'tax'         => $tax,
-                'shipping'    => $order->getFieldData('oxdelcost'),
+                'shipping'    => $order->getFieldData(Model\Order\DELCOST),
                 'coupon'      => implode(', ', $order->getVoucherNrList()),
             ],
             'products'    => fn\values(Product::map($order->getOrderArticles())),
@@ -121,14 +121,14 @@ class DataLayer implements IteratorAggregate
             yield self::push('checkoutOption', [
                 'checkout_option' => ['step' => 3, 'option' => $this->getShippingMethod()]
             ]);
-            $option = self::field(Model\Payment::class, $this->ctrl->getCheckedPaymentId(), 'oxdesc');
+            $option = self::field(Model\Payment::class, $this->ctrl->getCheckedPaymentId(), Model\Payment\DESC);
             // 4. payment (billing)
             $actionField = ['step' => 4, 'option' => $option];
         } else if ($this->ctrl instanceof Controller\OrderController) {
             // 5. order (review transaction)
             /** @var Model\Payment $payment */
             $payment = $this->ctrl->getPayment();
-            $option  = $payment ? $payment->getFieldData('oxdesc') : '';
+            $option  = $payment ? $payment->getFieldData(Model\Payment\DESC) : '';
             yield self::push('checkoutOption', [
                 'checkout_option' => ['step' => 4, 'option' => $option]
             ]);
@@ -246,7 +246,7 @@ class DataLayer implements IteratorAggregate
     private function getShippingMethod(): ?string
     {
         if ($basket = $this->getBasket()) {
-            return self::field(Model\DeliverySet::class, $basket->getShippingId(), 'oxtitle');
+            return self::field(Model\DeliverySet::class, $basket->getShippingId(), Model\DeliverySet\TITLE);
         }
         return null;
     }
