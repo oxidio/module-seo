@@ -8,8 +8,19 @@ namespace Oxidio\Seo;
 use fn;
 use Generator;
 use IteratorAggregate;
-use OxidEsales\Eshop\{Application\Controller,
-    Application\Model,
+use OxidEsales\Eshop\{
+    Application\Controller\BasketController,
+    Application\Controller\FrontendController,
+    Application\Controller\OrderController,
+    Application\Controller\PaymentController,
+    Application\Controller\ThankYouController,
+    Application\Controller\UserController,
+    Application\Model\ArticleList,
+    Application\Model\Basket,
+    Application\Model\Shop,
+    Application\Model\DeliverySet,
+    Application\Model\Payment,
+    Application\Model\Order,
     Core\Controller\BaseController,
     Core\Model\BaseModel,
     Core\Price
@@ -69,7 +80,7 @@ class DataLayer implements IteratorAggregate
      */
     private function purchaseActions(): Generator
     {
-        if (!$this->ctrl instanceof Controller\ThankYouController) {
+        if (!$this->ctrl instanceof ThankYouController) {
             return;
         }
 
@@ -84,11 +95,11 @@ class DataLayer implements IteratorAggregate
 
         yield self::push('purchase', [
             'actionField' => [
-                'id'          => $order->getFieldData(Model\Order\ORDERNR),
-                'affiliation' => self::field(Model\Shop::class, $order->getShopId(), Model\Shop\NAME),
-                'revenue'     => $order->getFieldData(Model\Order\TOTALORDERSUM),
+                'id'          => $order->getFieldData(Order\ORDERNR),
+                'affiliation' => self::field(Shop::class, $order->getShopId(), Shop\NAME),
+                'revenue'     => $order->getFieldData(Order\TOTALORDERSUM),
                 'tax'         => $tax,
-                'shipping'    => $order->getFieldData(Model\Order\DELCOST),
+                'shipping'    => $order->getFieldData(Order\DELCOST),
                 'coupon'      => implode(', ', $order->getVoucherNrList()),
             ],
             'products'    => fn\values(Product::map($order->getOrderArticles())),
@@ -101,10 +112,10 @@ class DataLayer implements IteratorAggregate
     private function checkoutActions(): Generator
     {
         $actionField = null;
-        if ($this->ctrl instanceof Controller\BasketController) {
+        if ($this->ctrl instanceof BasketController) {
             // 1. review cart (basket)
             $actionField = ['step' => 1];
-        } else if ($this->ctrl instanceof Controller\UserController) {
+        } else if ($this->ctrl instanceof UserController) {
             if (!$this->ctrl->getUser()) {
                 // 2. login
                 $option = [
@@ -117,18 +128,18 @@ class DataLayer implements IteratorAggregate
                 // 3. shipping
                 $actionField = ['step' => 3];
             }
-        } else if ($this->ctrl instanceof Controller\PaymentController) {
+        } else if ($this->ctrl instanceof PaymentController) {
             yield self::push('checkoutOption', [
                 'checkout_option' => ['step' => 3, 'option' => $this->getShippingMethod()]
             ]);
-            $option = self::field(Model\Payment::class, $this->ctrl->getCheckedPaymentId(), Model\Payment\DESC);
+            $option = self::field(Payment::class, $this->ctrl->getCheckedPaymentId(), Payment\DESC);
             // 4. payment (billing)
             $actionField = ['step' => 4, 'option' => $option];
-        } else if ($this->ctrl instanceof Controller\OrderController) {
+        } else if ($this->ctrl instanceof OrderController) {
             // 5. order (review transaction)
-            /** @var Model\Payment $payment */
+            /** @var Payment $payment */
             $payment = $this->ctrl->getPayment();
-            $option  = $payment ? $payment->getFieldData(Model\Payment\DESC) : '';
+            $option  = $payment ? $payment->getFieldData(Payment\DESC) : '';
             yield self::push('checkoutOption', [
                 'checkout_option' => ['step' => 4, 'option' => $option]
             ]);
@@ -159,7 +170,7 @@ class DataLayer implements IteratorAggregate
     {
         $position = 1;
         foreach ($this->getLists() as $listName => $articles) {
-            if (!$articles instanceof Model\ArticleList) {
+            if (!$articles instanceof ArticleList) {
                 continue;
             }
             foreach ($articles as $article) {
@@ -235,7 +246,7 @@ class DataLayer implements IteratorAggregate
         return Product::map($this->getBasket() ? $this->getBasket()->getContents() : []);
     }
 
-    private function getBasket(): ?Model\Basket
+    private function getBasket(): ?Basket
     {
         $session = $this->ctrl->getSession();
         $conf    = $this->ctrl->getConfig();
@@ -246,14 +257,14 @@ class DataLayer implements IteratorAggregate
     private function getShippingMethod(): ?string
     {
         if ($basket = $this->getBasket()) {
-            return self::field(Model\DeliverySet::class, $basket->getShippingId(), Model\DeliverySet\TITLE);
+            return self::field(DeliverySet::class, $basket->getShippingId(), DeliverySet\TITLE);
         }
         return null;
     }
 
     private function getProduct(): ?BaseModel
     {
-        return $this->ctrl instanceof Controller\FrontendController ? $this->ctrl->getViewProduct() : null;
+        return $this->ctrl instanceof FrontendController ? $this->ctrl->getViewProduct() : null;
     }
 
     private function getListName(): string
@@ -264,7 +275,7 @@ class DataLayer implements IteratorAggregate
     private function getLists(): iterable
     {
         $lists = $this->templateVars;
-        if ($this->ctrl instanceof Controller\FrontendController) {
+        if ($this->ctrl instanceof FrontendController) {
             $lists[$this->getListName()] = $this->ctrl->getViewProductList() ?: [];
         }
         return $lists;
@@ -272,7 +283,7 @@ class DataLayer implements IteratorAggregate
 
     public function getCurrencyCode(): ?string
     {
-        $currency = $this->ctrl instanceof Controller\FrontendController ? $this->ctrl->getActCurrency() : null;
+        $currency = $this->ctrl instanceof FrontendController ? $this->ctrl->getActCurrency() : null;
         return $currency ? $currency->name : null;
     }
 

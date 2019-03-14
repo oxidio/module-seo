@@ -7,7 +7,14 @@ namespace Oxidio\Seo;
 
 use fn;
 use JsonSerializable;
-use OxidEsales\Eshop\{Application\Model, Core\Base};
+use OxidEsales\Eshop\{
+    Application\Model\Article,
+    Application\Model\Category,
+    Application\Model\Manufacturer,
+    Application\Model\BasketItem,
+    Application\Model\OrderArticle,
+    Core\Base
+};
 
 /**
  * @property int $quantity
@@ -22,11 +29,11 @@ class Product implements JsonSerializable
 
     public static function create(Base $item, array $data = []): self
     {
-        if ($item instanceof Model\OrderArticle) {
+        if ($item instanceof OrderArticle) {
             $art = $item->getArticle();
-            $data['quantity'] = $item->getFieldData(Model\OrderArticle\AMOUNT);
+            $data['quantity'] = $item->getFieldData(OrderArticle\AMOUNT);
             $data['price']    = $item->getPrice()->getPrice();
-        } else if ($item instanceof Model\BasketItem) {
+        } else if ($item instanceof BasketItem) {
             $art = $item->getArticle();
             $data['quantity'] = $item->getAmount();
             $data['price']    = $item->getUnitPrice()->getPrice();
@@ -34,17 +41,17 @@ class Product implements JsonSerializable
             $art = $item;
         }
 
-        $art instanceof Model\Article || fn\fail(__METHOD__);
+        $art instanceof Article || fn\fail(__METHOD__);
 
         $product = new static;
         $product->key        = $art->getId();
         $product->properties = $data + [
-            'name'     => $art->getFieldData(Model\Article\TITLE),
-            'id'       => $art->getFieldData(Model\Article\ARTNUM),
+            'name'     => $art->getFieldData(Article\TITLE),
+            'id'       => $art->getFieldData(Article\ARTNUM),
             'price'    => $art->getPrice()->getPrice(),
-            'brand'    => $art->getManufacturer() ? $art->getManufacturer()->getFieldData(Model\Manufacturer\TITLE) : null,
-            'category' => $art->getCategory() ? $art->getCategory()->getFieldData(Model\Category\TITLE) : null,
-            'variant'  => $art->getFieldData(Model\Article\VARSELECT),
+            'brand'    => $art->getManufacturer() ? $art->getManufacturer()->getFieldData(Manufacturer\TITLE) : null,
+            'category' => $art->getCategory() ? $art->getCategory()->getFieldData(Category\TITLE) : null,
+            'variant'  => $art->getFieldData(Article\VARSELECT),
         ];
 
         return $product;
