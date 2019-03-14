@@ -3,7 +3,7 @@
  * Copyright (C) oxidio. See LICENSE file for license details.
  */
 
-namespace Oxidio\Command;
+namespace Oxidio\Cli;
 
 use fn;
 use OxidEsales\Eshop\Application\Model\{Article, Category};
@@ -65,20 +65,20 @@ class SiteMap
     {
         return Oxidio\query(function(Article $model, $timeStamp) {
             return [$model->getMainLink(), $timeStamp];
-        }, [Article\ACTIVE => 1, Article\PARENTID => '']);
+        })->where([Article\ACTIVE => 1, Article\PARENTID => '']);
     }
 
     protected function variants(): iterable
     {
         return Oxidio\query(function(Article $model, $timeStamp) {
             return [$model->getMainLink(), $timeStamp];
-        }, [Article\ACTIVE => 1, Article\PARENTID => ['<>', '']]);
+        })->where([Article\ACTIVE => 1, Article\PARENTID => ['<>', '']]);
     }
 
     protected function categories(): iterable
     {
         return Oxidio\query(function(Category $model, $timeStamp) {
             return [$model->getLink(), $timeStamp];
-        }, [Category\ACTIVE => 1, Category\HIDDEN => '0']);
+        })->where([Category\ACTIVE => 1, Category\HIDDEN => 0]);
     }
 }
