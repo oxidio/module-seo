@@ -21,7 +21,6 @@ use OxidEsales\Eshop\{
     Application\Model\DeliverySet,
     Application\Model\Payment,
     Application\Model\Order,
-    Core\Controller\BaseController,
     Core\Model\BaseModel,
     Core\Price
 };
@@ -30,18 +29,18 @@ use SplStack;
 class DataLayer implements IteratorAggregate
 {
     /**
-     * @var BaseController
+     * @var FrontendController
      */
     private $ctrl;
     /**
-     * @var iterable
+     * @var ArticleList[]
      */
-    private $templateVars;
+    private $lists;
 
-    public function __construct(BaseController $ctrl, iterable $templateVars)
+    public function __construct(FrontendController $ctrl, ArticleList ...$lists)
     {
-        $this->ctrl         = $ctrl;
-        $this->templateVars = $templateVars;
+        $this->ctrl  = $ctrl;
+        $this->lists = $lists;
     }
 
     /**
@@ -56,7 +55,7 @@ class DataLayer implements IteratorAggregate
                 'impressions'  => $impressions,
             ]);
         }
-        if ($product = $this->getProduct()) {
+        if ($product = $this->ctrl->getViewProduct()) {
             /**  @link https://developers.google.com/tag-manager/enhanced-ecommerce#details */
             yield self::push(null, ['detail' => [
                 'actionField' => ['list' => $this->getListName()],
@@ -169,10 +168,7 @@ class DataLayer implements IteratorAggregate
     private function impressions(): Generator
     {
         $position = 1;
-        foreach ($this->getLists() as $listName => $articles) {
-            if (!$articles instanceof ArticleList) {
-                continue;
-            }
+        foreach ($this->lists as $listName => $articles) {
             foreach ($articles as $article) {
                 yield Product::create($article, ['list' => $listName, 'position' => $position++]);
             }
@@ -262,29 +258,14 @@ class DataLayer implements IteratorAggregate
         return null;
     }
 
-    private function getProduct(): ?BaseModel
-    {
-        return $this->ctrl instanceof FrontendController ? $this->ctrl->getViewProduct() : null;
-    }
-
     private function getListName(): string
     {
         return $this->ctrl->getViewConfig()->getTopActiveClassName();
     }
 
-    private function getLists(): iterable
-    {
-        $lists = $this->templateVars;
-        if ($this->ctrl instanceof FrontendController) {
-            $lists[$this->getListName()] = $this->ctrl->getViewProductList() ?: [];
-        }
-        return $lists;
-    }
-
     public function getCurrencyCode(): ?string
     {
-        $currency = $this->ctrl instanceof FrontendController ? $this->ctrl->getActCurrency() : null;
-        return $currency ? $currency->name : null;
+        return ($currency = $this->ctrl->getActCurrency()) ? $currency->name : null;
     }
 
     private static function field(string $class, string $id, string $field)
