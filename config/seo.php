@@ -12,10 +12,6 @@ use Oxidio\Seo;
 use OxidEsales\Eshop\Core\Theme;
 
 return [
-    ID       => 'oxidio/seo',
-    TITLE    => 'oxidio/module-seo',
-    URL      => 'https://github.com/oxidio/module-seo',
-    AUTHOR   => 'oxidio',
     SETTINGS => [
         'Enhanced Ecommerce (UA)' => [
             Seo\GA_ACTIVE  => [
@@ -30,7 +26,11 @@ return [
             ],
         ]
     ],
-    BLOCKS   => [Theme\LAYOUT_BASE => Theme\LAYOUT_BASE\BLOCK_HEAD_META_ROBOTS],
+    BLOCKS   => [
+        Theme\LAYOUT_BASE => [
+            Theme\LAYOUT_BASE\BLOCK_HEAD_META_ROBOTS => append(new Seo\Snippet)
+        ]
+    ],
 
     'cli' => DI\decorate(function(fn\Cli $cli) {
         $cli->command('sitemap', Cli\SiteMap::class, ['scope']);

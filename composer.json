@@ -3,6 +3,8 @@
   "type": "oxideshop-module",
   "description": "seo module for oxid shop",
   "license": "GPL-3.0",
+  "homepage": "https://github.com/oxidio/module-seo",
+  "authors": [{"name":  "oxidio"}],
   "keywords": [
     "oxid",
     "seo",
@@ -35,11 +37,11 @@
   "extra": {
     "oxideshop": {
       "whitelist-filter": [
-        "views/**/*",
         "metadata.php"
       ],
-      "target-directory": "oxidio/seo"
-    }
+      "target-directory": "oxidio/module-seo"
+    },
+    "di": "config/seo.php"
   },
   "bin": [
     "bin/oxidio-seo"

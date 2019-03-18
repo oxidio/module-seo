@@ -1,4 +1,4 @@
 <?php
 
 $sMetadataVersion = '2.1';
-$aModule          = json_decode(json_encode(Oxidio\Module::instance(Oxidio\DI\SEO)), true);
+$aModule          = Oxidio\Module\Module::instance(fn\VENDOR\OXIDIO\MODULE_SEO)->getMetadata();
