@@ -7,7 +7,7 @@ namespace Oxidio\Module;
 
 use DI;
 use fn;
-use Oxidio\Cli;
+use OxidEsales\Eshop\Application\Model\Basket;
 use Oxidio\Seo;
 use OxidEsales\Eshop\Core\Theme;
 
@@ -31,11 +31,13 @@ return [
             Theme\LAYOUT_BASE\BLOCK_HEAD_META_ROBOTS => append(new Seo\Snippet)
         ]
     ],
-
-    'cli' => DI\decorate(function(fn\Cli $cli) {
-        $cli->command('sitemap', Cli\SiteMap::class, ['scope']);
+    EXTEND => [
+        Basket::class => Seo\Model\SeoBasket::class
+    ],
+    CLI => DI\decorate(function(fn\Cli $cli) {
+        $cli->command('sitemap', Seo\Cli\SiteMap::class, ['scope']);
         return $cli;
     }),
 
-    Cli\SiteMap::class => DI\create(),
+    Seo\Cli\SiteMap::class => DI\create(),
 ];

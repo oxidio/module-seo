@@ -3,7 +3,7 @@
  * Copyright (C) oxidio. See LICENSE file for license details.
  */
 
-namespace Oxidio\Cli;
+namespace Oxidio\Seo\Cli;
 
 use fn;
 use OxidEsales\Eshop\Application\Model\{Article, Category};

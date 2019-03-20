@@ -16,7 +16,6 @@ use OxidEsales\Eshop\{
     Application\Controller\ThankYouController,
     Application\Controller\UserController,
     Application\Model\ArticleList,
-    Application\Model\Basket,
     Application\Model\Shop,
     Application\Model\DeliverySet,
     Application\Model\Payment,
@@ -24,7 +23,6 @@ use OxidEsales\Eshop\{
     Core\Model\BaseModel,
     Core\Price
 };
-use SplStack;
 
 class DataLayer implements IteratorAggregate
 {
@@ -196,41 +194,7 @@ class DataLayer implements IteratorAggregate
         if ($changes !== null) {
             return $changes;
         }
-
-        $session = $this->ctrl->getSession();
-        if (!$this->getBasket()) { // logout
-            $session->deleteVariable('ga:cart-history');
-            return [];
-        }
-
-        $changes = [];
-
-        if (!($history = $session->getVariable('ga:cart-history'))) {
-            $session->setVariable('ga:cart-history', $history = new SplStack);
-            $history->push($this->cartProducts());
-        }
-
-        /**
-         * @var Product[] $new
-         * @var Product[] $old
-         */
-
-        if (json_encode($new = $this->cartProducts()) === json_encode($old = $history->top())) {
-            return [];
-        }
-        $history->push($new);
-
-        foreach ($old as $key => $product) {
-            if ($change = ($new[$key]->quantity ?? 0) - $product->quantity) {
-                $product->quantity = $change;
-                $changes[$key]     = $product;
-            }
-            unset($new[$key]);
-        }
-        foreach ($new as $key => $product) {
-            $changes[$key] = $product;
-        }
-
+        $changes = ($basket = $this->getBasket()) ? $basket->getChanges() : [];
         return $changes;
     }
 
@@ -242,7 +206,7 @@ class DataLayer implements IteratorAggregate
         return Product::map($this->getBasket() ? $this->getBasket()->getContents() : []);
     }
 
-    private function getBasket(): ?Basket
+    private function getBasket(): ?Model\SeoBasket
     {
         $session = $this->ctrl->getSession();
         $conf    = $this->ctrl->getConfig();
