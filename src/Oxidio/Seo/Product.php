@@ -21,9 +21,7 @@ use OxidEsales\Eshop\{
  */
 class Product implements JsonSerializable
 {
-    use fn\Meta\Properties\ReadWriteTrait;
-
-    protected $properties;
+    use fn\PropertiesReadWriteTrait;
 
     private $key;
 
