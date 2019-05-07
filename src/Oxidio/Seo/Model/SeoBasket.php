@@ -21,7 +21,7 @@ class SeoBasket extends SeoBasket_parent
     /**
      * @inheritdoc
      */
-    public function load(): void
+    public function load()
     {
         parent::load();
         $this->products = null;
@@ -30,7 +30,7 @@ class SeoBasket extends SeoBasket_parent
     /**
      * @inheritdoc
      */
-    public function afterUpdate(): void
+    public function afterUpdate()
     {
         parent::afterUpdate();
         if ($this->products === null) {
