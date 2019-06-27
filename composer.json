@@ -17,17 +17,12 @@
     "enhanced commerce"
   ],
   "require": {
-    "oxidio/oxidio": "^1",
-
-    "ext-json": "*",
-    "php": ">=7.1"
-  },
-  "config": {
-    "platform": {"php": "7.1"}
+    "oxidio/oxidio": "^1.0",
+    "ext-json": "*"
   },
   "require-dev": {
-    "oxid-esales/oxideshop-demodata-ce": "^6",
-    "oxidio/project": "^1"
+    "oxid-esales/oxideshop-demodata-ce": "^6.0",
+    "oxidio/project": "^1.0"
   },
   "autoload": {
     "psr-4": {
