@@ -34,7 +34,7 @@ return [
     EXTEND => [
         Basket::class => Seo\Model\SeoBasket::class
     ],
-    CLI => DI\decorate(function(fn\Cli $cli) {
+    CLI => DI\decorate(static function(fn\Cli $cli) {
         $cli->command('sitemap', Seo\Cli\SiteMap::class, ['scope']);
         return $cli;
     }),

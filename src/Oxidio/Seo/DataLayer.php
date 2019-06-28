@@ -157,7 +157,7 @@ class DataLayer implements IteratorAggregate
     private static function event(string $event = null, iterable $ecommerce = null): Generator
     {
         $ecommerce && $event && yield 'event' => $event;
-        yield 'ecommerce' => fn\traverse($ecommerce ?: [], function($data) {
+        yield 'ecommerce' => fn\traverse($ecommerce ?: [], static function($data) {
             $data = is_iterable($data) ? fn\traverse($data) : $data;
             return $data ?: null;
         });
@@ -178,7 +178,7 @@ class DataLayer implements IteratorAggregate
      */
     private function cartActions(): array
     {
-        return fn\traverse($this->cartChanges(), function($product) {
+        return fn\traverse($this->cartChanges(), static function($product) {
             $group = $product->quantity > 0 ? 'add' : 'remove';
             $product->quantity = abs($product->quantity);
             return fn\mapGroup($group);
