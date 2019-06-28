@@ -9,21 +9,27 @@ use OxidEsales\Eshop\Application\Controller\FrontendController;
 use OxidEsales\Eshop\Application\Model\ArticleList;
 use OxidEsales\Eshop\Core\Config;
 use fn;
+use Psr\Log\LoggerInterface;
+use Throwable;
 
 class Snippet
 {
-    public function __invoke(FrontendController $ctrl, Config $conf, ArticleList ...$lists)
+    public function __invoke(FrontendController $ctrl, Config $conf, LoggerInterface $logger, ArticleList ...$lists)
     {
-        if (!$conf->getConfigParam(GA_ACTIVE)) {
+        if (!($id = $conf->getConfigParam(GA_ID)) || !$conf->getConfigParam(GA_ACTIVE)) {
             return null;
         }
-        $id   = $conf->getConfigParam(GA_ID);
         $data = strpos($id, 'GTM-') === 0 ? new DataGtm : new DataUa;
-        return sprintf(
-            $data::SNIPPET,
-            json_encode(fn\values($data(new DataLayer($ctrl, ...$lists))),JSON_PRETTY_PRINT),
-            $id
-        );
+        try {
+            return sprintf(
+                $data::SNIPPET,
+                json_encode(fn\values($data(new DataLayer($ctrl, ...$lists))),JSON_PRETTY_PRINT),
+                $id
+            );
+        } catch (Throwable $e) {
+            $logger->error($e->getMessage());
+            return false;
+        }
     }
 }
 

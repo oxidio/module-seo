@@ -11,7 +11,7 @@ class DataUa
 {
     public function __invoke(DataLayer $dataLayer)
     {
-        fn\fail('todo: implement it');
+        fn\fail('not implemented yet: %s', __METHOD__);
     }
 
     public const SNIPPET = <<<EOT
