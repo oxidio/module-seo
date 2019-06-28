@@ -5,7 +5,7 @@
 
 namespace Oxidio\Seo\Cli;
 
-use fn;
+use Generator;
 use OxidEsales\Eshop\Application\Model\{Article, Category};
 use Oxidio;
 
@@ -22,42 +22,37 @@ class SiteMap
     /**
      * Create a site map (@see https://www.sitemaps.org/de/protocol.html)
      *
-     * @param fn\Cli\IO $io
      * @param string[] $scope articles|variants|categories
      * @param float $priority (@see https://www.sitemaps.org/de/protocol.html#prioritydef)
      * @param string $frequency (@see https://www.sitemaps.org/de/protocol.html#changefreqdef)
+     *
+     * @return Generator
      */
     public function __invoke(
-        fn\Cli\IO $io,
         array $scope,
         float $priority = 0.5,
         string $frequency = self::FREQUENCY_DAILY
-    ): void {
-        $io->writeln([
-            '<?xml version="1.0" encoding="UTF-8"?>',
-            '<urlset 
+    ): Generator {
+        yield '<?xml version="1.0" encoding="UTF-8"?>';
+        yield '<urlset 
     xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9"
->',
-        ]);
-
+>';
         foreach ($scope as $method) {
-            $query = $this->$method();
-            $io->isVerbose() && $io->note($query);
-            foreach ($query as [$loc, $lastMod]) {
-                $io->writeln([
+            foreach ($this->$method() as [$loc, $lastMod]) {
+                yield from [
                     '    <url>',
                     "        <loc>{$loc}</loc>",
                     "        <priority>{$priority}</priority>",
                     "        <lastmod>{$lastMod}</lastmod>",
                     "        <changefreq>{$frequency}</changefreq>",
                     '    </url>',
-                ]);
+                ];
             }
         }
 
-        $io->writeln('</urlset>');
+        yield '</urlset>';
     }
 
     protected function articles(): iterable
