@@ -5,7 +5,6 @@
 
 namespace Oxidio\Module;
 
-use DI;
 use fn;
 use OxidEsales\Eshop\Application\Model\Basket;
 use Oxidio\Seo;
@@ -34,10 +33,8 @@ return [
     EXTEND => [
         Basket::class => Seo\Model\SeoBasket::class
     ],
-    CLI => DI\decorate(static function(fn\Cli $cli) {
-        $cli->command('sitemap', Seo\Cli\SiteMap::class, ['scope']);
+    CLI => static function(fn\Cli $cli) {
+        $cli->command('sitemap', new Seo\Cli\SiteMap, ['scope']);
         return $cli;
-    }),
-
-    Seo\Cli\SiteMap::class => DI\create(),
+    },
 ];
