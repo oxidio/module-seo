@@ -3,9 +3,9 @@
 !/bin/
 !/config/
 !/src/
-!/views/
 !/.gitattributes
 !/.gitignore
+!/.travis.yml
 !/composer.json
 !/LICENSE
 !/metadata.php

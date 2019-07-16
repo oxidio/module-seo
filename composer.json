@@ -22,6 +22,8 @@
   },
   "require-dev": {
     "oxid-esales/oxideshop-demodata-ce": "^6.0",
+    "php-fn/test": "^2.0",
+    "php-coveralls/php-coveralls": "^2.1",
     "oxidio/project": "1.x-dev"
   },
   "autoload": {
