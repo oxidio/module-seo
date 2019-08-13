@@ -5,7 +5,7 @@
 
 namespace Oxidio\Seo;
 
-use fn;
+use php;
 use JsonSerializable;
 use OxidEsales\Eshop\{
     Application\Model\Article,
@@ -21,7 +21,7 @@ use OxidEsales\Eshop\{
  */
 class Product implements JsonSerializable
 {
-    use fn\PropertiesTrait;
+    use php\PropertiesTrait;
 
     private $key;
 
@@ -39,7 +39,7 @@ class Product implements JsonSerializable
             $art = $item;
         }
 
-        $art instanceof Article || fn\fail(__METHOD__);
+        $art instanceof Article || php\fail(__METHOD__);
 
         $product = new static;
         $product->key        = $art->getId();
@@ -63,8 +63,8 @@ class Product implements JsonSerializable
      */
     public static function map(iterable $items, array $data = []): array
     {
-        return fn\map($items, static function($item) use($data) {
-            return fn\mapValue($product = static::create($item, $data))->andKey($product->key);
+        return php\map($items, static function($item) use($data) {
+            return php\mapValue($product = static::create($item, $data))->andKey($product->key);
         })->sort()->traverse;
     }
 

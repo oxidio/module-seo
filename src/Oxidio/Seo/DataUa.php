@@ -5,13 +5,13 @@
 
 namespace Oxidio\Seo;
 
-use fn;
+use php;
 
 class DataUa
 {
     public function __invoke(DataLayer $dataLayer)
     {
-        fn\fail('not implemented yet: %s', __METHOD__);
+        php\fail('not implemented yet: %s', __METHOD__);
     }
 
     public const SNIPPET = <<<EOT
