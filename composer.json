@@ -17,7 +17,7 @@
     "enhanced commerce"
   ],
   "require": {
-    "oxidio/oxidio": "^1.0",
+    "oxidio/oxidio": "^6.3",
     "ext-json": "*"
   },
   "require-dev": {
