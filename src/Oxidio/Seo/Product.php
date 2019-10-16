@@ -9,11 +9,13 @@ use php;
 use JsonSerializable;
 use OxidEsales\Eshop\{
     Application\Model\Article,
-    Application\Model\Category,
-    Application\Model\Manufacturer,
     Application\Model\BasketItem,
     Application\Model\OrderArticle,
-    Core\Base
+    Core\Base,
+    Core\Database\TABLE\OXCATEGORIES,
+    Core\Database\TABLE\OXMANUFACTURERS,
+    Core\Database\TABLE\OXARTICLES,
+    Core\Database\TABLE\OXORDERARTICLES
 };
 
 /**
@@ -29,7 +31,7 @@ class Product implements JsonSerializable
     {
         if ($item instanceof OrderArticle) {
             $art = $item->getArticle();
-            $data['quantity'] = $item->getFieldData(OrderArticle\AMOUNT);
+            $data['quantity'] = $item->getFieldData(OXORDERARTICLES\OXAMOUNT);
             $data['price']    = $item->getPrice()->getPrice();
         } else if ($item instanceof BasketItem) {
             $art = $item->getArticle();
@@ -44,12 +46,12 @@ class Product implements JsonSerializable
         $product = new static;
         $product->key        = $art->getId();
         $product->properties = $data + [
-            'name'     => $art->getFieldData(Article\TITLE),
-            'id'       => $art->getFieldData(Article\ARTNUM),
+            'name'     => $art->getFieldData(OXARTICLES\OXTITLE),
+            'id'       => $art->getFieldData(OXARTICLES\OXARTNUM),
             'price'    => $art->getPrice()->getPrice(),
-            'brand'    => $art->getManufacturer() ? $art->getManufacturer()->getFieldData(Manufacturer\TITLE) : null,
-            'category' => $art->getCategory() ? $art->getCategory()->getFieldData(Category\TITLE) : null,
-            'variant'  => $art->getFieldData(Article\VARSELECT),
+            'brand'    => $art->getManufacturer() ? $art->getManufacturer()->getFieldData(OXMANUFACTURERS\OXTITLE) : null,
+            'category' => $art->getCategory() ? $art->getCategory()->getFieldData(OXCATEGORIES\OXTITLE) : null,
+            'variant'  => $art->getFieldData(OXARTICLES\OXVARSELECT),
         ];
 
         return $product;
