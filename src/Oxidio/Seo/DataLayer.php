@@ -16,15 +16,13 @@ use OxidEsales\Eshop\{
     Application\Controller\ThankYouController,
     Application\Controller\UserController,
     Application\Model\ArticleList,
+    Application\Model\Shop,
     Application\Model\DeliverySet,
     Application\Model\Payment,
     Core\Model\BaseModel,
-    Core\Price,
-    Core\Database\TABLE\OXDELIVERYSET,
-    Core\Database\TABLE\OXPAYMENTS,
-    Core\Database\TABLE\OXORDER,
-    Core\Database\TABLE\OXSHOPS
+    Core\Price
 };
+use Oxidio\Enum\Tables as T;
 
 class DataLayer implements IteratorAggregate
 {
@@ -32,6 +30,7 @@ class DataLayer implements IteratorAggregate
      * @var FrontendController
      */
     private $ctrl;
+
     /**
      * @var ArticleList[]
      */
@@ -94,11 +93,11 @@ class DataLayer implements IteratorAggregate
 
         yield self::push('purchase', [
             'actionField' => [
-                'id'          => $order->getFieldData(OXORDER\OXORDERNR),
-                'affiliation' => self::field(Shop::class, $order->getShopId(), OXSHOPS\OXNAME),
-                'revenue'     => $order->getFieldData(OXORDER\OXTOTALORDERSUM),
+                'id'          => $order->getFieldData(T\Order::ORDERNR),
+                'affiliation' => self::field(Shop::class, $order->getShopId(), T\Shops::NAME),
+                'revenue'     => $order->getFieldData(T\Order::TOTALORDERSUM),
                 'tax'         => $tax,
-                'shipping'    => $order->getFieldData(OXORDER\OXDELCOST),
+                'shipping'    => $order->getFieldData(T\Order::DELCOST),
                 'coupon'      => implode(', ', $order->getVoucherNrList()),
             ],
             'products'    => php\values(Product::map($order->getOrderArticles())),
@@ -131,14 +130,14 @@ class DataLayer implements IteratorAggregate
             yield self::push('checkoutOption', [
                 'checkout_option' => ['step' => 3, 'option' => $this->getShippingMethod()]
             ]);
-            $option = self::field(Payment::class, $this->ctrl->getCheckedPaymentId(), OXPAYMENTS\OXDESC);
+            $option = self::field(Payment::class, $this->ctrl->getCheckedPaymentId(), T\Payments::DESC);
             // 4. payment (billing)
             $actionField = ['step' => 4, 'option' => $option];
         } else if ($this->ctrl instanceof OrderController) {
             // 5. order (review transaction)
             /** @var Payment $payment */
             $payment = $this->ctrl->getPayment();
-            $option  = $payment ? $payment->getFieldData(OXPAYMENTS\OXDESC) : '';
+            $option  = $payment ? $payment->getFieldData(T\Payments::DESC) : '';
             yield self::push('checkoutOption', [
                 'checkout_option' => ['step' => 4, 'option' => $option]
             ]);
@@ -219,7 +218,7 @@ class DataLayer implements IteratorAggregate
     private function getShippingMethod(): ?string
     {
         if ($basket = $this->getBasket()) {
-            return self::field(DeliverySet::class, $basket->getShippingId(), OXDELIVERYSET\OXTITLE);
+            return self::field(DeliverySet::class, $basket->getShippingId(), T\Deliveryset::TITLE);
         }
         return null;
     }

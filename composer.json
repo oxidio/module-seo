@@ -4,7 +4,11 @@
   "description": "seo module for oxid shop",
   "license": "GPL-3.0",
   "homepage": "https://github.com/oxidio/module-seo",
-  "authors": [{"name":  "oxidio"}],
+  "authors": [
+    {
+      "name": "oxidio"
+    }
+  ],
   "keywords": [
     "oxid",
     "seo",
@@ -25,11 +29,20 @@
   },
   "autoload": {
     "psr-4": {
-      "Oxidio\\": ["src/Oxidio"]
+      "Oxidio\\": [
+        "src/Oxidio"
+      ]
     },
     "files": [
       "src/autoload-files.php"
     ]
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Oxidio\\": [
+        "tests/Oxidio"
+      ]
+    }
   },
   "minimum-stability": "dev",
   "prefer-stable": true,

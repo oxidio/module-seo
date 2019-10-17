@@ -8,11 +8,10 @@ namespace Oxidio\Seo\Cli;
 use Generator;
 use OxidEsales\Eshop\{
     Application\Model\Article,
-    Application\Model\Category,
-    Core\Database\TABLE\OXCATEGORIES,
-    Core\Database\TABLE\OXARTICLES
+    Application\Model\Category
 };
 use Oxidio;
+use Oxidio\Enum\Tables as T;
 
 class SiteMap
 {
@@ -64,20 +63,20 @@ class SiteMap
     {
         return Oxidio\query(static function(Article $model, $timeStamp) {
             return [$model->getMainLink(), $timeStamp];
-        })->where([OXARTICLES\OXACTIVE => 1, OXARTICLES\OXPARENTID => '']);
+        })->where([T\Articles::ACTIVE => 1, T\Articles::PARENTID => '']);
     }
 
     protected function variants(): iterable
     {
         return Oxidio\query(static function(Article $model, $timeStamp) {
             return [$model->getMainLink(), $timeStamp];
-        })->where([OXARTICLES\OXACTIVE => 1, OXARTICLES\OXPARENTID => ['<>', '']]);
+        })->where([T\Articles::ACTIVE => 1, T\Articles::PARENTID => ['<>', '']]);
     }
 
     protected function categories(): iterable
     {
         return Oxidio\query(static function(Category $model, $timeStamp) {
             return [$model->getLink(), $timeStamp];
-        })->where([OXCATEGORIES\OXACTIVE => 1, OXCATEGORIES\OXHIDDEN => 0]);
+        })->where([T\Categories::ACTIVE => 1, T\Categories::HIDDEN => 0]);
     }
 }

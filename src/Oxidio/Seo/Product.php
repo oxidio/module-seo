@@ -7,16 +7,11 @@ namespace Oxidio\Seo;
 
 use php;
 use JsonSerializable;
-use OxidEsales\Eshop\{
-    Application\Model\Article,
-    Application\Model\BasketItem,
-    Application\Model\OrderArticle,
-    Core\Base,
-    Core\Database\TABLE\OXCATEGORIES,
-    Core\Database\TABLE\OXMANUFACTURERS,
-    Core\Database\TABLE\OXARTICLES,
-    Core\Database\TABLE\OXORDERARTICLES
+use OxidEsales\EshopCommunity\{
+    Application\Model,
+    Core\Base
 };
+use Oxidio\Enum\Tables as T;
 
 /**
  * @property int $quantity
@@ -29,11 +24,11 @@ class Product implements JsonSerializable
 
     public static function create(Base $item, array $data = []): self
     {
-        if ($item instanceof OrderArticle) {
+        if ($item instanceof Model\OrderArticle) {
             $art = $item->getArticle();
-            $data['quantity'] = $item->getFieldData(OXORDERARTICLES\OXAMOUNT);
+            $data['quantity'] = $item->getFieldData(T\Orderarticles::AMOUNT);
             $data['price']    = $item->getPrice()->getPrice();
-        } else if ($item instanceof BasketItem) {
+        } else if ($item instanceof Model\BasketItem) {
             $art = $item->getArticle();
             $data['quantity'] = $item->getAmount();
             $data['price']    = $item->getUnitPrice()->getPrice();
@@ -41,17 +36,17 @@ class Product implements JsonSerializable
             $art = $item;
         }
 
-        $art instanceof Article || php\fail(__METHOD__);
+        $art instanceof Model\Article || php\fail(__METHOD__);
 
         $product = new static;
         $product->key        = $art->getId();
         $product->properties = $data + [
-            'name'     => $art->getFieldData(OXARTICLES\OXTITLE),
-            'id'       => $art->getFieldData(OXARTICLES\OXARTNUM),
+            'name'     => $art->getFieldData(T\Articles::TITLE),
+            'id'       => $art->getFieldData(T\Articles::ARTNUM),
             'price'    => $art->getPrice()->getPrice(),
-            'brand'    => $art->getManufacturer() ? $art->getManufacturer()->getFieldData(OXMANUFACTURERS\OXTITLE) : null,
-            'category' => $art->getCategory() ? $art->getCategory()->getFieldData(OXCATEGORIES\OXTITLE) : null,
-            'variant'  => $art->getFieldData(OXARTICLES\OXVARSELECT),
+            'brand'    => ($man = $art->getManufacturer(false)) && $man->getId() ? $man->getFieldData(T\Manufacturers::TITLE) : null,
+            'category' => ($cat = $art->getCategory()) && $cat->getId() ? $cat->getFieldData(T\Categories::TITLE) : null,
+            'variant'  => $art->getFieldData(T\Articles::VARSELECT),
         ];
 
         return $product;
