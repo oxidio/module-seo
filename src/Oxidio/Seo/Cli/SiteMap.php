@@ -63,20 +63,20 @@ class SiteMap
     {
         return Oxidio\query(static function(Article $model, $timeStamp) {
             return [$model->getMainLink(), $timeStamp];
-        })->where([T\Articles::ACTIVE => 1, T\Articles::PARENTID => '']);
+        })->where([T\ARTICLES::ACTIVE => 1, T\ARTICLES::PARENTID => '']);
     }
 
     protected function variants(): iterable
     {
         return Oxidio\query(static function(Article $model, $timeStamp) {
             return [$model->getMainLink(), $timeStamp];
-        })->where([T\Articles::ACTIVE => 1, T\Articles::PARENTID => ['<>', '']]);
+        })->where([T\ARTICLES::ACTIVE => 1, T\ARTICLES::PARENTID => ['<>', '']]);
     }
 
     protected function categories(): iterable
     {
         return Oxidio\query(static function(Category $model, $timeStamp) {
             return [$model->getLink(), $timeStamp];
-        })->where([T\Categories::ACTIVE => 1, T\Categories::HIDDEN => 0]);
+        })->where([T\CATEGORIES::ACTIVE => 1, T\CATEGORIES::HIDDEN => 0]);
     }
 }

@@ -41,12 +41,12 @@ class Product implements JsonSerializable
         $product = new static;
         $product->key        = $art->getId();
         $product->properties = $data + [
-            'name'     => $art->getFieldData(T\Articles::TITLE),
-            'id'       => $art->getFieldData(T\Articles::ARTNUM),
+            'name'     => $art->getFieldData(T\ARTICLES::TITLE),
+            'id'       => $art->getFieldData(T\ARTICLES::ARTNUM),
             'price'    => $art->getPrice()->getPrice(),
-            'brand'    => ($man = $art->getManufacturer(false)) && $man->getId() ? $man->getFieldData(T\Manufacturers::TITLE) : null,
-            'category' => ($cat = $art->getCategory()) && $cat->getId() ? $cat->getFieldData(T\Categories::TITLE) : null,
-            'variant'  => $art->getFieldData(T\Articles::VARSELECT),
+            'brand'    => ($man = $art->getManufacturer(false)) && $man->getId() ? $man->getFieldData(T\MANUFACTURERS::TITLE) : null,
+            'category' => ($cat = $art->getCategory()) && $cat->getId() ? $cat->getFieldData(T\CATEGORIES::TITLE) : null,
+            'variant'  => $art->getFieldData(T\ARTICLES::VARSELECT),
         ];
 
         return $product;
