@@ -8,7 +8,7 @@ namespace Oxidio\Seo;
 use OxidEsales\Eshop\Application\Controller\FrontendController;
 use OxidEsales\Eshop\Application\Model\ArticleList;
 use OxidEsales\Eshop\Core\Config;
-use php;
+use Php;
 use Psr\Log\LoggerInterface;
 use Throwable;
 
@@ -23,7 +23,7 @@ class Snippet
         try {
             return sprintf(
                 $data::SNIPPET,
-                json_encode(php\values($data(new DataLayer($ctrl, ...$lists))),JSON_PRETTY_PRINT),
+                json_encode(Php\values($data(new DataLayer($ctrl, ...$lists))),JSON_PRETTY_PRINT),
                 $id
             );
         } catch (Throwable $e) {

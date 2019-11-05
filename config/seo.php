@@ -5,7 +5,7 @@
 
 namespace Oxidio\Module;
 
-use php;
+use Php;
 use OxidEsales\Eshop\Application\Model\Basket;
 use Oxidio\Seo;
 use OxidEsales\Eshop\Core\Theme;
@@ -33,7 +33,7 @@ return [
     EXTEND => [
         Basket::class => Seo\Model\SeoBasket::class
     ],
-    CLI => static function(php\Cli $cli) {
+    CLI => static function(Php\Cli $cli) {
         $cli->command('sitemap', new Seo\Cli\SiteMap, ['scope']);
         return $cli;
     },
