@@ -36,7 +36,7 @@ class Product implements JsonSerializable
             $art = $item;
         }
 
-        $art instanceof Model\Article || Php\fail(__METHOD__);
+        $art instanceof Model\Article || Php::fail(__METHOD__);
 
         $product = new static;
         $product->key        = $art->getId();
