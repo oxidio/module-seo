@@ -11,7 +11,7 @@ use Oxidio\Seo;
 use OxidEsales\Eshop\Core\Theme;
 
 return [
-    SETTINGS => [
+    Module::SETTINGS => [
         'Enhanced Ecommerce (UA)' => [
             Seo\GA_ACTIVE  => [
                 Settings::VALUE => true,
@@ -25,15 +25,15 @@ return [
             ],
         ]
     ],
-    BLOCKS   => [
+    Module::BLOCKS => [
         Theme\LAYOUT_BASE => [
             Theme\LAYOUT_BASE\BLOCK_HEAD_META_ROBOTS => Block::append(new Seo\Snippet)
         ]
     ],
-    EXTEND => [
+    Module::EXTEND => [
         Basket::class => Seo\Model\SeoBasket::class
     ],
-    CLI => static function(Php\Cli $cli) {
+    Module::CLI => static function(Php\Cli $cli) {
         $cli->command('sitemap', new Seo\Cli\SiteMap, ['scope']);
         return $cli;
     },
