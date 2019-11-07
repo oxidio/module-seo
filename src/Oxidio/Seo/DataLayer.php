@@ -182,7 +182,7 @@ class DataLayer implements IteratorAggregate
         return Php\traverse($this->cartChanges(), static function($product) {
             $group = $product->quantity > 0 ? 'add' : 'remove';
             $product->quantity = abs($product->quantity);
-            return Php\mapGroup($group);
+            return Php::mapGroup($group);
         });
     }
 
