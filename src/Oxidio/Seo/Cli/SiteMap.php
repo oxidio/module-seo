@@ -10,7 +10,7 @@ use OxidEsales\Eshop\{
     Application\Model\Article,
     Application\Model\Category
 };
-use Oxidio;
+use Oxidio\Core\Database;
 use Oxidio\Enum\Tables as T;
 
 class SiteMap
@@ -61,22 +61,22 @@ class SiteMap
 
     protected function articles(): iterable
     {
-        return Oxidio\query(static function(Article $model, $timeStamp) {
+        return Database::get()->query(...[static function (Article $model, $timeStamp) {
             return [$model->getMainLink(), $timeStamp];
-        })->where([T\ARTICLES::ACTIVE => 1, T\ARTICLES::PARENTID => '']);
+        }])->where([T\ARTICLES::ACTIVE => 1, T\ARTICLES::PARENTID => '']);
     }
 
     protected function variants(): iterable
     {
-        return Oxidio\query(static function(Article $model, $timeStamp) {
+        return Database::get()->query(...[static function (Article $model, $timeStamp) {
             return [$model->getMainLink(), $timeStamp];
-        })->where([T\ARTICLES::ACTIVE => 1, T\ARTICLES::PARENTID => ['<>', '']]);
+        }])->where([T\ARTICLES::ACTIVE => 1, T\ARTICLES::PARENTID => ['<>', '']]);
     }
 
     protected function categories(): iterable
     {
-        return Oxidio\query(static function(Category $model, $timeStamp) {
+        return Database::get()->query(...[static function (Category $model, $timeStamp) {
             return [$model->getLink(), $timeStamp];
-        })->where([T\CATEGORIES::ACTIVE => 1, T\CATEGORIES::HIDDEN => 0]);
+        }])->where([T\CATEGORIES::ACTIVE => 1, T\CATEGORIES::HIDDEN => 0]);
     }
 }
