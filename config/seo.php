@@ -14,14 +14,14 @@ return [
     SETTINGS => [
         'Enhanced Ecommerce (UA)' => [
             Seo\GA_ACTIVE  => [
-                SETTINGS\VALUE => true,
-                SETTINGS\LABEL => 'Activate',
-                SETTINGS\HELP  => 'Activate google (U)niversal (A)nalytics (E)nhanced (E)commerce',
+                Settings::VALUE => true,
+                Settings::LABEL => 'Activate',
+                Settings::HELP => 'Activate google (U)niversal (A)nalytics (E)nhanced (E)commerce',
             ],
             Seo\GA_ID => [
-                SETTINGS\VALUE => (string) getenv('GA_ACCOUNT_ID'),
-                SETTINGS\LABEL => 'Id',
-                SETTINGS\HELP  => 'GTM container ID (GTM-*) or GA property ID (UA-*)',
+                Settings::VALUE => (string) getenv('GA_ACCOUNT_ID'),
+                Settings::LABEL => 'Id',
+                Settings::HELP => 'GTM container ID (GTM-*) or GA property ID (UA-*)',
             ],
         ]
     ],
