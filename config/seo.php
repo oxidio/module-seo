@@ -27,7 +27,7 @@ return [
     ],
     BLOCKS   => [
         Theme\LAYOUT_BASE => [
-            Theme\LAYOUT_BASE\BLOCK_HEAD_META_ROBOTS => append(new Seo\Snippet)
+            Theme\LAYOUT_BASE\BLOCK_HEAD_META_ROBOTS => Block::append(new Seo\Snippet)
         ]
     ],
     EXTEND => [
