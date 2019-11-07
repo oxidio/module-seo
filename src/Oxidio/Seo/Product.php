@@ -60,7 +60,7 @@ class Product implements JsonSerializable
      */
     public static function map(iterable $items, array $data = []): array
     {
-        return Php\map($items, static function($item) use($data) {
+        return Php::map($items, static function ($item) use ($data) {
             return Php::mapValue($product = static::create($item, $data))->andKey($product->key);
         })->sort()->traverse;
     }

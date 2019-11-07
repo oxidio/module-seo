@@ -47,7 +47,7 @@ class DataLayer implements IteratorAggregate
      */
     public function getIterator(): Generator
     {
-        if ($impressions = Php\traverse($this->impressions())) {
+        if ($impressions = Php::traverse($this->impressions())) {
             /** @link https://developers.google.com/tag-manager/enhanced-ecommerce#product-impressions */
             yield self::push(null, [
                 'currencyCode' => $this->getCurrencyCode(),
@@ -65,7 +65,7 @@ class DataLayer implements IteratorAggregate
         foreach ($this->cartActions() as $action => $products) {
             yield self::push($action === 'add' ? 'addToCart' : 'removeFromCart' , [
                 'currencyCode' => $this->getCurrencyCode(),
-                $action        => ['products' => Php\values($products)],
+                $action        => ['products' => Php::values($products)],
             ]);
         }
 
@@ -100,7 +100,7 @@ class DataLayer implements IteratorAggregate
                 'shipping'    => $order->getFieldData(T\ORDER::DELCOST),
                 'coupon'      => implode(', ', $order->getVoucherNrList()),
             ],
-            'products'    => Php\values(Product::map($order->getOrderArticles())),
+            'products'    => Php::values(Product::map($order->getOrderArticles())),
         ]);
     }
 
@@ -146,20 +146,20 @@ class DataLayer implements IteratorAggregate
 
         $actionField && yield self::push('checkout', [
             'actionField' => $actionField,
-            'products'    => Php\values($this->cartProducts()),
+            'products'    => Php::values($this->cartProducts()),
         ]);
     }
 
     private static function push(...$args): array
     {
-        return Php\traverse(self::event(...$args));
+        return Php::traverse(self::event(...$args));
     }
 
     private static function event(string $event = null, iterable $ecommerce = null): Generator
     {
         $ecommerce && $event && yield 'event' => $event;
-        yield 'ecommerce' => Php\traverse($ecommerce ?: [], static function($data) {
-            $data = is_iterable($data) ? Php\traverse($data) : $data;
+        yield 'ecommerce' => Php::traverse($ecommerce ?: [], static function ($data) {
+            $data = is_iterable($data) ? Php::traverse($data) : $data;
             return $data ?: null;
         });
     }
@@ -179,7 +179,7 @@ class DataLayer implements IteratorAggregate
      */
     private function cartActions(): array
     {
-        return Php\traverse($this->cartChanges(), static function($product) {
+        return Php::traverse($this->cartChanges(), static function ($product) {
             $group = $product->quantity > 0 ? 'add' : 'remove';
             $product->quantity = abs($product->quantity);
             return Php::mapGroup($group);
