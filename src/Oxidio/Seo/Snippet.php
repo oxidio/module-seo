@@ -23,7 +23,7 @@ class Snippet
         try {
             return sprintf(
                 $data::SNIPPET,
-                json_encode(Php::values($data(new DataLayer($ctrl, ...$lists))),JSON_PRETTY_PRINT),
+                json_encode(Php::values($data(new DataLayer($ctrl, ...$lists))), JSON_PRETTY_PRINT),
                 $id
             );
         } catch (Throwable $e) {
