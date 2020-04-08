@@ -21,7 +21,7 @@
     "enhanced commerce"
   ],
   "require": {
-    "oxidio/oxidio": "^6.1",
+    "oxidio/oxidio": "^6.5",
     "ext-json": "*"
   },
   "require-dev": {
@@ -50,8 +50,19 @@
       "dev-master": "1.x-dev"
     },
     "oxideshop": {
-      "whitelist-filter": [
-        "metadata.php"
+      "blacklist-filter": [
+        "bin/**/*",
+        "config/**/*",
+        "dev-vendor/**/*",
+        "source/**/*",
+        "src/**/*",
+        "tests/**/*",
+        "var/**/*",
+        "vendor/**/*",
+        "*.json",
+        "*.lock",
+        "*.md",
+        "LICENSE"
       ],
       "target-directory": "oxidio/module-seo"
     },
