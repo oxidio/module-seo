@@ -4,9 +4,8 @@
  * Copyright (C) oxidio. See LICENSE file for license details.
  */
 
-call_user_func(static function() {
-    /** @noinspection PhpIncludeInspection */
-    exit(call_user_func(require getcwd() . '/vendor/autoload.php', static function () {
-        return Oxidio\Module\Module::instance(Php\VENDOR\OXIDIO\MODULE_SEO)->cli->run();
-    }));
-});
+exit(call_user_func(require getcwd() . '/vendor/autoload.php', static function () {
+    $cli = new Php\Cli(Php\Cli::di(Php\VENDOR\OXIDIO\MODULE_SEO, Oxidio::di()));
+    $cli->command('sitemap', new Oxidio\Seo\Cli\SiteMap(), ['scope']);
+    return $cli->run();
+}));
