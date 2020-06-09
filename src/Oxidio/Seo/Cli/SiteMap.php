@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * Copyright (C) oxidio. See LICENSE file for license details.
  */
@@ -6,11 +6,10 @@
 namespace Oxidio\Seo\Cli;
 
 use Generator;
-use OxidEsales\Eshop\{
-    Application\Model\Article,
-    Application\Model\Category
-};
+use OxidEsales\Eshop\Application\Model\Article;
+use OxidEsales\Eshop\Application\Model\Category;
 use Oxidio\Core\Database;
+use Php\Php;
 use Oxidio\Enum\Tables as T;
 
 class SiteMap
@@ -24,18 +23,28 @@ class SiteMap
     public const FREQUENCY_NEVER   = 'never';
 
     /**
+     * @var array
+     */
+    private $scopes;
+
+    public function __construct(array $scopes = [])
+    {
+        $this->scopes = $scopes;
+    }
+
+    /**
      * Create a site map (@see https://www.sitemaps.org/de/protocol.html)
      *
-     * @param string[] $scope articles|variants|categories
      * @param float $priority (@see https://www.sitemaps.org/de/protocol.html#prioritydef)
      * @param string $frequency (@see https://www.sitemaps.org/de/protocol.html#changefreqdef)
+     * @param string[] $scope articles|variants|categories
      *
      * @return Generator
      */
     public function __invoke(
-        array $scope,
-        float $priority = 0.5,
-        string $frequency = self::FREQUENCY_DAILY
+        float $priority = null,
+        string $frequency = self::FREQUENCY_DAILY,
+        string ...$scope
     ): Generator {
         yield '<?xml version="1.0" encoding="UTF-8"?>';
         yield '<urlset 
@@ -44,15 +53,19 @@ class SiteMap
     xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9"
 >';
         foreach ($scope as $method) {
-            foreach ($this->$method() as [$loc, $lastMod]) {
-                yield from [
-                    '    <url>',
-                    "        <loc>{$loc}</loc>",
-                    "        <priority>{$priority}</priority>",
-                    "        <lastmod>{$lastMod}</lastmod>",
-                    "        <changefreq>{$frequency}</changefreq>",
-                    '    </url>',
+            foreach (Php::arr($this->scopes[$method] ?? $this->$method()) as $entry) {
+                $entry += [
+                    'loc' => $entry[0] ?? null,
+                    'lastmod' => $entry[1] ?? null,
+                    'priority' => $priority,
+                    'frequency' => $frequency,
                 ];
+                yield '    <url>';
+                yield "        <loc>{$entry['loc']}</loc>";
+                $entry['priority'] && yield "        <priority>{$entry['priority']}</priority>";
+                $entry['frequency'] && yield "        <changefreq>{$entry['frequency']}</changefreq>";
+                $entry['lastmod'] && yield "        <lastmod>{$entry['lastmod']}</lastmod>";
+                yield '    </url>';
             }
         }
 
