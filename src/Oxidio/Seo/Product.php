@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * Copyright (C) oxidio. See LICENSE file for license details.
  */
@@ -26,7 +26,7 @@ class Product implements JsonSerializable
     {
         if ($item instanceof Model\OrderArticle) {
             $art = $item->getArticle();
-            $data['quantity'] = $item->getFieldData(T\Orderarticles::AMOUNT);
+            $data['quantity'] = $item->getFieldData(T\ORDERARTICLES::AMOUNT);
             $data['price']    = $item->getPrice()->getPrice();
         } else if ($item instanceof Model\BasketItem) {
             $art = $item->getArticle();
@@ -38,7 +38,7 @@ class Product implements JsonSerializable
 
         $art instanceof Model\Article || Php::fail(__METHOD__);
 
-        $product = new static;
+        $product = new static();
         $product->key        = $art->getId();
         $product->properties = $data + [
             'name'     => $art->getFieldData(T\ARTICLES::TITLE),
@@ -60,9 +60,10 @@ class Product implements JsonSerializable
      */
     public static function map(iterable $items, array $data = []): array
     {
-        return Php::map($items, static function ($item) use ($data) {
-            return Php::mapValue($product = static::create($item, $data))->andKey($product->key);
-        })->sort()->traverse;
+        return Php::sort(Php::gen($items, static function ($item) use ($data) {
+            $product = static::create($item, $data);
+            yield [$product->key] => $product;
+        }));
     }
 
     /**

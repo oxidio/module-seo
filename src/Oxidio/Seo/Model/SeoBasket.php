@@ -13,23 +13,14 @@ use Oxidio\Seo;
  */
 class SeoBasket extends SeoBasket_parent
 {
-    /**
-     * @var array
-     */
     private $products = [];
 
-    /**
-     * @inheritdoc
-     */
     public function load()
     {
         parent::load();
         $this->products = null;
     }
 
-    /**
-     * @inheritdoc
-     */
     public function afterUpdate()
     {
         parent::afterUpdate();

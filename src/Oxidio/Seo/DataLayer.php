@@ -47,7 +47,7 @@ class DataLayer implements IteratorAggregate
      */
     public function getIterator(): Generator
     {
-        if ($impressions = Php::traverse($this->impressions())) {
+        if ($impressions = Php::arr($this->impressions())) {
             /** @link https://developers.google.com/tag-manager/enhanced-ecommerce#product-impressions */
             yield self::push(null, [
                 'currencyCode' => $this->getCurrencyCode(),
@@ -100,7 +100,7 @@ class DataLayer implements IteratorAggregate
                 'shipping'    => $order->getFieldData(T\ORDER::DELCOST),
                 'coupon'      => implode(', ', $order->getVoucherNrList()),
             ],
-            'products'    => Php::values(Product::map($order->getOrderArticles())),
+            'products'    => Php::values($order->getOrderArticles()),
         ]);
     }
 
