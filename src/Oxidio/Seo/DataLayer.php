@@ -91,16 +91,18 @@ class DataLayer implements IteratorAggregate
             }
         }
 
-        yield self::push('purchase', [
-            'actionField' => [
-                'id'          => $order->getFieldData(T\ORDER::ORDERNR),
-                'affiliation' => self::field(Shop::class, $order->getShopId(), T\SHOPS::NAME),
-                'revenue'     => $order->getFieldData(T\ORDER::TOTALORDERSUM),
-                'tax'         => $tax,
-                'shipping'    => $order->getFieldData(T\ORDER::DELCOST),
-                'coupon'      => implode(', ', $order->getVoucherNrList()),
-            ],
-            'products'    => Php::values($order->getOrderArticles()),
+        yield self::push(null, [
+            'purchase' => [
+                'actionField' => [
+                    'id'          => $order->getFieldData(T\ORDER::ORDERNR),
+                    'affiliation' => self::field(Shop::class, $order->getShopId(), T\SHOPS::NAME),
+                    'revenue'     => $order->getFieldData(T\ORDER::TOTALORDERSUM),
+                    'tax'         => $tax,
+                    'shipping'    => $order->getFieldData(T\ORDER::DELCOST),
+                    'coupon'      => implode(', ', $order->getVoucherNrList()),
+                ],
+                'products' => Php::values(Product::map($order->getOrderArticles())),
+            ]
         ]);
     }
 
