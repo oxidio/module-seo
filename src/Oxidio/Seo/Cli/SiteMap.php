@@ -56,7 +56,7 @@ class SiteMap
             foreach (Php::arr($this->scopes[$method] ?? $this->$method()) as $entry) {
                 $entry += [
                     'loc' => $entry[0] ?? null,
-                    'lastmod' => $entry[1] ?? null,
+                    'lastmod' => substr($entry[1] ?? '', 0, 10) ?: null,
                     'priority' => $priority,
                     'frequency' => $frequency,
                 ];
