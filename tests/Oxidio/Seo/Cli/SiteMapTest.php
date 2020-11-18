@@ -11,6 +11,7 @@ class SiteMapTest extends TestCase
 {
     public function testIntegration(): void
     {
-        $this::assertNotEmpty(iterator_to_array((new SiteMap())(['articles', 'variants', 'categories'])));
+        $obj = new SiteMap();
+        $this::assertNotEmpty(iterator_to_array($obj(null, $obj::FREQUENCY_DAILY, 'articles', 'variants', 'categories')));
     }
 }
