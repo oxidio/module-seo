@@ -5,7 +5,6 @@
 
 namespace Oxidio\Seo\Cli;
 
-use Generator;
 use OxidEsales\Eshop\Application\Model\Article;
 use OxidEsales\Eshop\Application\Model\Category;
 use Oxidio\Core\Database;
@@ -35,17 +34,17 @@ class SiteMap
     /**
      * Create a site map (@see https://www.sitemaps.org/de/protocol.html)
      *
-     * @param float $priority (@see https://www.sitemaps.org/de/protocol.html#prioritydef)
+     * @param ?float $priority (@see https://www.sitemaps.org/de/protocol.html#prioritydef)
      * @param string $frequency (@see https://www.sitemaps.org/de/protocol.html#changefreqdef)
      * @param string[] $scope articles|variants|categories
      *
-     * @return Generator
+     * @return iterable
      */
     public function __invoke(
         float $priority = null,
         string $frequency = self::FREQUENCY_DAILY,
         string ...$scope
-    ): Generator {
+    ): iterable {
         yield '<?xml version="1.0" encoding="UTF-8"?>';
         yield '<urlset 
     xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
