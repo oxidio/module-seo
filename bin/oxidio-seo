@@ -1,10 +1,11 @@
 #!/usr/bin/env php
-<?php
+<?php declare(strict_types=1);
 /**
  * Copyright (C) oxidio. See LICENSE file for license details.
  */
 
 exit(call_user_func(require getcwd() . '/vendor/autoload.php', static function () {
+    require_once getcwd() . '/source/bootstrap.php';
     $cli = new Php\Cli(Php\Cli::di(Php\VENDOR\OXIDIO\MODULE_SEO, Oxidio::di()));
     $cli->command('sitemap', new Oxidio\Seo\Cli\SiteMap(), ['scope']);
     return $cli->run();
